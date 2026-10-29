@@ -1,0 +1,9 @@
+target/
+**/target/
+.idea/
+.vscode/
+*.iml
+*.log
+.env
+.DS_Store
+docker-compose.env

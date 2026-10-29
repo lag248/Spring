@@ -1,0 +1,40 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/bookings,/api/bookings/**,/api/booking,/api/booking/**,/api/user,/api/user/**
+        - id: hotel-service
+          uri: lb://hotel-service
+          predicates:
+            - Path=/api/hotels,/api/hotels/**,/api/rooms,/api/rooms/**
+          filters:
+            - RemoveRequestHeader=X-Internal-Token
+      httpclient:
+        connect-timeout: 1500
+        response-timeout: 35s
+  codec:
+    max-in-memory-size: 2MB
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+security:
+  jwt:
+    secret: ${JWT_SECRET:U3VwZXJTZWNyZXREZXZlbG9wbWVudEtleUZvckhvdGVsQm9va2luZy0yMDI2IQ==}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

@@ -1,0 +1,56 @@
+services:
+  eureka-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: eureka-server
+    ports:
+      - "8761:8761"
+
+  hotel-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: hotel-service
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      JWT_SECRET: ${JWT_SECRET:-U3VwZXJTZWNyZXREZXZlbG9wbWVudEtleUZvckhvdGVsQm9va2luZy0yMDI2IQ==}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-internal-token-change-me}
+    depends_on:
+      - eureka-server
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: booking-service
+    ports:
+      - "8081:8081"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      JWT_SECRET: ${JWT_SECRET:-U3VwZXJTZWNyZXREZXZlbG9wbWVudEtleUZvckhvdGVsQm9va2luZy0yMDI2IQ==}
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN:-local-internal-token-change-me}
+    depends_on:
+      - eureka-server
+      - hotel-service
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        MODULE: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      JWT_SECRET: ${JWT_SECRET:-U3VwZXJTZWNyZXREZXZlbG9wbWVudEtleUZvckhvdGVsQm9va2luZy0yMDI2IQ==}
+    depends_on:
+      - eureka-server
+      - hotel-service
+      - booking-service

@@ -1,0 +1,50 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: jdbc:h2:mem:bookingdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+security:
+  jwt:
+    secret: ${JWT_SECRET:U3VwZXJTZWNyZXREZXZlbG9wbWVudEtleUZvckhvdGVsQm9va2luZy0yMDI2IQ==}
+hotel-client:
+  internal-token: ${INTERNAL_SERVICE_TOKEN:local-internal-token-change-me}
+  connect-timeout: 1500
+  read-timeout: 2000
+  retry:
+    max-attempts: 3
+    initial-backoff-ms: 150
+booking:
+  reconciliation:
+    stale-after-minutes: ${BOOKING_RECONCILIATION_STALE_AFTER_MINUTES:10}
+    fixed-delay-ms: ${BOOKING_RECONCILIATION_FIXED_DELAY_MS:30000}
+    initial-delay-ms: ${BOOKING_RECONCILIATION_INITIAL_DELAY_MS:30000}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+logging:
+  pattern:
+    level: "%5p [traceId:%X{traceId:-}]"
+  level:
+    com.example.hotelbooking: INFO

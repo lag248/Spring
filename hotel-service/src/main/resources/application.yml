@@ -1,0 +1,40 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: hotel-service
+  datasource:
+    url: jdbc:h2:mem:hoteldb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+security:
+  jwt:
+    secret: ${JWT_SECRET:U3VwZXJTZWNyZXREZXZlbG9wbWVudEtleUZvckhvdGVsQm9va2luZy0yMDI2IQ==}
+internal:
+  service-token: ${INTERNAL_SERVICE_TOKEN:local-internal-token-change-me}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+logging:
+  pattern:
+    level: "%5p [traceId:%X{traceId:-}]"
+  level:
+    com.example.hotelbooking: INFO
